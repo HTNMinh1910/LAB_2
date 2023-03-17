@@ -1,34 +1,44 @@
+const Hbs = require("express-handlebars");
 const express = require("express");
+const path = require("path");
 const app = express();
-const bodyParser = require("body-parser");
-const cal = require("./caculator.js");
+const cal = require("./calculator.js");
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname));
-app.get("/calculator", function (req, res) {
-  res.sendFile(__dirname + "/index.html");
+app.engine('hbs', Hbs.engine());
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
+app.listen(8080);
+
+app.get('/', function(req, res){
+  res.render('home');
 });
 
-app.post("/calculator", (req, res) => {
-  const soA = Number(req.body.soA);
-  const soB = Number(req.body.soB);
-  const operator = req.body.operator;
-  const kq = req.body.kq;
+app.get("/calculator", (req, res) => {
+  const soA = Number(req.query.soA);
+  const soB = Number(req.query.soB);
+  const operator = req.query.operator;
+  // const kq = req.query.result;
 
   switch (operator) {
     case "cong":
-      res.write(`Tong cua ${soA} va ${soB} bang: ${cal.add(soA, soB)}`);
+      // res.render(`Tong cua ${soA} va ${soB} bang: ${cal.add(soA, soB)}`);
+      // kq = `Tong cua ${soA} va ${soB} bang: ${cal.add(soA, soB)}`;
+      res.render('home', {layout: "main",kq: `Tong cua ${soA} va ${soB} bang: ${cal.add(soA, soB)}`, showContent: true, showTitle: false});
       break;
     case "tru":
-      res.write(`Hieu cua ${soA} va ${soB} bang: ${cal.sub(soA, soB)}`);
+      // res.render(`Hieu cua ${soA} va ${soB} bang: ${cal.sub(soA, soB)}`);
+      // kq = `Hieu cua ${soA} va ${soB} bang: ${cal.sub(soA, soB)}`;
+      res.render('home', {layout: "main",kq: `Hieu cua ${soA} va ${soB} bang: ${cal.sub(soA, soB)}`, showContent: true, showTitle: false});
       break;
     case "nhan":
-      res.write(`Tich cua ${soA} va ${soB} bang: ${cal.mul(soA, soB)}`);
+      // res.render(`Tich cua ${soA} va ${soB} bang: ${cal.mul(soA, soB)}`);
+      // kq = `Tich cua ${soA} va ${soB} bang: ${cal.mul(soA, soB)}`
+      res.render('home', {layout: "main",kq: `Hieu cua ${soA} va ${soB} bang: ${cal.sub(soA, soB)}`, showContent: true, showTitle: false});
       break;
     case "chia":
-      res.write(`Thuong cua ${soA} va ${soB} bang: ${cal.div(soA, soB)}`);
+      // res.render(`Thuong cua ${soA} va ${soB} bang: ${cal.div(soA, soB)}`);
+      // kq = `Thuong cua ${soA} va ${soB} bang: ${cal.div(soA, soB)}`
+      res.render('home', {layout: "main",kq: `Thuong cua ${soA} va ${soB} bang: ${cal.div(soA, soB)}`, showContent: true, showTitle: false});
       break;
   }
 });
-
-app.listen(8080);
